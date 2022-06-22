@@ -1,0 +1,171 @@
+﻿<hc:Window
+    x:Class="Dpx.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:Dpx"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+    Title="信号分析-数字荧光谱"
+    Width="1000"
+    Height="600"
+    Background="#303030"
+    ShowTitle="True"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="filetxt" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="SDRSharp_20150527_141931Z_146089kHz_IQ.wav" />
+            <Button
+                x:Name="openFileBtn"
+                Grid.Column="1"
+                Width="100"
+                Background="{StaticResource DarkInfoBrush}"
+                Click="openFileBtn_Click"
+                Content="打开文件" />
+            <Button
+                x:Name="startBtn"
+                Grid.Column="2"
+                Width="100"
+                Background="{StaticResource SuccessBrush}"
+                Click="startBtn_Click"
+                Content="开始" />
+            <Button
+                x:Name="stopBtn"
+                Grid.Column="3"
+                Width="100"
+                Background="{StaticResource DangerBrush}"
+                Click="stopBtn_Click"
+                Content="停止" VerticalAlignment="Bottom" />
+            <Button
+                Name="sinModeBtn"
+                Grid.Column="4"
+                Width="100"
+                Background="{StaticResource AccentBrush}"
+                Click="sinModeBtn_Click"
+                Content="Sin(x)"
+                ToolTip="sin信号模拟" />
+        </Grid>
+
+        <Border Grid.Row="1" Margin="5,0,5,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="2">
+            <Grid Margin="5">
+                <Grid.Resources>
+                    <s:GradientStopsToLinearGradientBrushConverter x:Key="ColorsToLinearGradientBrushConverter" />
+                    <!--  Tooltip template  -->
+                    <DataTemplate x:Key="TooltipItemTemplate">
+                        <Grid DataContext="{Binding PointMetadata}">
+                            <TextBlock Text="{Binding Tooltip}" />
+                        </Grid>
+                    </DataTemplate>
+
+                    <Style x:Key="HeatmapStyle" BasedOn="{StaticResource {x:Type s:FastUniformHeatmapRenderableSeries}}" TargetType="local:CustomUniformHeatmapRenderableSeries" />
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <s:SciChartSurface x:Name="sciChart" Grid.Column="0" Padding="0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" ChartTitle="Digital Phosphor Spectrum">
+                    <s:SciChartSurface.RenderableSeries>
+                        <local:CustomUniformHeatmapRenderableSeries x:Name="heatmapSeries" DrawTextInCell="True" Opacity="0.9" Style="{StaticResource HeatmapStyle}">
+                            <local:CustomUniformHeatmapRenderableSeries.ColorMap>
+                                <s:HeatmapColorPalette x:Name="heatmapPalette" Maximum="10" Minimum="0">
+                                    <!--<GradientStop Offset="0.0" Color="Black" />-->
+                                    <GradientStop Offset="0.1" Color="DarkBlue" />
+                                    <GradientStop Offset="0.2" Color="CornflowerBlue" />
+                                    <GradientStop Offset="0.4" Color="DarkGreen" />
+                                    <GradientStop Offset="0.6" Color="Chartreuse" />
+                                    <GradientStop Offset="0.8" Color="Yellow" />
+                                    <GradientStop Offset="1" Color="Red" />
+                                </s:HeatmapColorPalette>
+                            </local:CustomUniformHeatmapRenderableSeries.ColorMap>
+                        </local:CustomUniformHeatmapRenderableSeries>
+
+                    </s:SciChartSurface.RenderableSeries>
+
+                    <s:SciChartSurface.XAxis>
+                        <s:NumericAxis
+                            x:Name="xAxis"
+                            AxisTitle="Frequency"
+                            DrawMajorBands="True"
+                            FlipCoordinates="False"
+                            ScientificNotation="None" />
+                    </s:SciChartSurface.XAxis>
+
+                    <s:SciChartSurface.YAxis>
+                        <s:NumericAxis
+                            x:Name="yAxis"
+                            AxisAlignment="Left"
+                            AxisTitle="Amp(dB)"
+                            DrawMajorBands="True"
+                            FlipCoordinates="False"
+                            ScientificNotation="None" />
+                    </s:SciChartSurface.YAxis>
+
+                    <s:SciChartSurface.ChartModifier>
+                        <s:ModifierGroup>
+                            <s:TooltipModifier />
+                            <s:ZoomPanModifier ClipModeX="None" />
+                            <s:MouseWheelZoomModifier />
+                            <s:RubberBandXyZoomModifier ExecuteOn="MouseRightButton" />
+                            <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick" />
+                        </s:ModifierGroup>
+                    </s:SciChartSurface.ChartModifier>
+                </s:SciChartSurface>
+
+                <s:HeatmapColorMap
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch"
+                    Background="{Binding Source={x:Reference Name=sciChart}, Path=Background}"
+                    ColorMap="{Binding ColorMap.GradientStops, Converter={StaticResource ColorsToLinearGradientBrushConverter}}"
+                    DataContext="{Binding Source={x:Reference Name=heatmapSeries}, Mode=OneWay}"
+                    Foreground="{Binding Source={x:Reference Name=sciChart}, Path=Foreground}"
+                    Maximum="{Binding ColorMap.Maximum}"
+                    Minimum="{Binding ColorMap.Minimum}"
+                    Opacity="0.9"
+                    Orientation="Vertical"
+                    TextFormatting="n0" />
+
+                <!--<s:SciChartPerformanceOverlay
+                Grid.Row="0"
+                Width="300"
+                Margin="0,15,10,0"
+                Padding="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="#33FFFFFF"
+                ChartsVisibility="Visible"
+                FontSize="12"
+                Foreground="#ffd600"
+                SciChartFps="10"
+                TargetSurface="{Binding Source={x:Reference Name=sciChart}}"
+                WpfFps="12" />-->
+
+            </Grid>
+
+        </Border>
+        <ProgressBar
+            x:Name="progressBar"
+            Grid.Row="2"
+            Margin="5"
+            HorizontalAlignment="Stretch"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="2"
+            Maximum="100"
+            Minimum="0" />
+    </Grid>
+</hc:Window>
