@@ -1,37 +1,136 @@
 # Dpx
 Digital phosphor spectrum for signal analysis
-[icon]
+<!-- PROJECT SHIELDS -->
 
-# Name
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-[Badges]
+<!-- PROJECT LOGO -->
+<br />
 
-## Introduction - 介绍
+<p align="center">
+  <a href="https://github.com/shaojintian/Best_README_template/">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
 
-### Summary - 概要
+  <h3 align="center">信号分析之数字荧光谱</h3>
+  <p align="center">
+    一个纯"C#"实现的数字荧光谱项目！
+    <br />
+    <a href="https://github.com/lemurmu/Dpx/tree/master/Doc"><strong>探索本项目的文档 »</strong></a>
+    <br />
+    <br />
+  </p>
 
-### Features - 特性
+</p>
 
-## Requirements - 必要条件（环境，对所有项目，和所有子模块和库的描述。）
 
-## Configuration - 配置（配置信息。）
+ 本篇README.md面向开发者
+ 
+## 目录
 
-## Installation - 安装（如何安装。）
+- [上手指南](#上手指南)
+  - [开发前的配置要求](#开发前的配置要求)
+  - [安装步骤](#安装步骤)
+- [文件目录说明](#文件目录说明)
+- [开发的架构](#开发的架构)
+- [部署](#部署)
+- [使用到的框架](#使用到的框架)
+- [贡献者](#贡献者)
+  - [如何参与开源项目](#如何参与开源项目)
+- [版本控制](#版本控制)
+- [作者](#作者)
+- [鸣谢](#鸣谢)
 
-## Usage - 用法（用法。）
+### 上手指南
 
-## Development - 开发（关于怎样开发的文档信息。（API 等。））
+所见即所得，傻瓜式的打开解决方案生成项目，然后点击VS的运行按钮，便可食用！
 
-## Changelog - 更新日志（一个简短的历史记录（更改，替换或者其他）。）
 
-## FAQ - 常见问题（常见问题。）
 
-## Support - 支持
+###### 开发前的配置要求
 
-### Dos - 文档（更多文档。）
+1. 生成项目
+2. 将audio文件夹中的文件拷贝到输出目录，也可以在界面上点击打开文件按钮选择音频文件
 
-### Contact - 联系（其他联系信息（电子邮件地址，网站，公司名称，地址等）。提交bug，功能要求，提交补丁，加入邮件列表，得到通知，或加入用户或开发开发区群的介绍。）
+###### **安装步骤**
 
-## Authors and acknowledgment - 贡献者和感谢（作者列表和鸣谢。）
+1. Get a free API Key at [https://example.com](https://example.com)
+2. Clone the repo
 
-## License - 版权信息（版权和许可信息（或阅读许可证）、法律声明。）
+```sh
+git clone https://github.com/lemurmu/Dpx.git
+```
+
+### 文件目录说明
+eg:
+
+```
+filetree 
+├── README.md
+├──.gitignore
+├── README.md
+├── /Doc/
+├── /Screenshort/
+├── /Dpx/
+│  │  ├── Audio
+│  │  └── Dll
+│  │  └── Dpx
+│  │  └── Dpx.sln
+```
+### 类似项目
+- [Tschucker](https://github.com/Tschucker/Python-Digital-Phosphor-Display)
+这位用Python实现，GUI实现数字荧光谱的时候有一些迷惑，基本是调用Python现成的库。
+
+### 开发的架构 
+
+请阅读[ARCHITECTURE.md](https://github.com/lemurmu/Dpx/blob/master/README.md) 查阅为该项目的架构。
+
+### 部署
+
+暂无
+
+### 使用到的框架
+
+- [scichart](https://www.scichart.com/)
+- [handycontrol](https://handyorg.gitee.io/handycontrol/)
+- [mathdotnet](https://www.mathdotnet.com/)
+
+### 贡献者
+
+windfall。
+
+#### 如何参与开源项目
+
+贡献使开源社区成为一个学习、激励和创造的绝佳场所。你所作的任何贡献都是**非常感谢**的。
+
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### 版本控制
+
+该项目使用Git进行版本管理。您可以在repository参看当前可用版本。
+
+### lemurmu
+
+455721762@qq.com
+
+### 鸣谢
+- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
+- [Img Shields](https://shields.io)
+- [Choose an Open Source License](https://choosealicense.com)
+- [GitHub Pages](https://pages.github.com)
+- [Animate.css](https://daneden.github.io/animate.css)
+- [xxxxxxxxxxxxxx](https://connoratherton.com/loaders)
+
+
+
+
