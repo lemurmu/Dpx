@@ -22,10 +22,12 @@ namespace Dpx
         }
 
         private bool exit = true;
-        private uint sampleRate = 1000;
+        private uint sampleRate = 0;
+        private double scale = 0;
+        private double maxNum = 200;//出现的最大次数
         private string audioFile = "SDRSharp_20150527_141931Z_146089kHz_IQ.wav";
         private IQFileReader reader = new IQFileReader();
-        private double[,] spectrum = null;//信号打在bitmap格子上的次数
+        private ulong[,] spectrum = null;//信号打在bitmap格子上的次数
         private void openFileBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -51,11 +53,8 @@ namespace Dpx
             }
 
             spectrum = null;
-            heatmapPalette.Maximum = 100;
-            heatmapPalette.Minimum = 0;
-            this.xAxis.TextFormatting = "0.0KHz";
-            this.yAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, 100);
-            this.xAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, 1200);
+            sampleRate = 0;
+            scale = 0;
             reader.StartReadIQ(audioFile, 8192);
         }
 
@@ -68,7 +67,18 @@ namespace Dpx
 
         private void ProcessFFT(float[] iqData, int length)
         {
-            this.sampleRate = reader.waveOpeater.Sample;
+            if (sampleRate == 0)
+            {
+                this.sampleRate = reader.waveOpeater.Sample;
+                this.maxNum = 200;
+                this.heatmapPalette.Maximum = maxNum;
+                this.heatmapPalette.Minimum = 0;
+                this.scale = GetFreqHzScale(sampleRate);
+                this.xAxis.TextFormatting = $"0.0{GetFreqUnitName(sampleRate)}";
+                this.yAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, maxNum);
+                this.xAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, sampleRate / 2 / scale);
+            }
+
 
             int fftLen = iqData.Length / 2;
             float[] real = new float[fftLen];
@@ -79,6 +89,11 @@ namespace Dpx
                 imag[i] = iqData[2 * i + 1];
             }
 
+            Fft(real, imag, fftLen);
+        }
+
+        private void Fft(float[] real, float[] imag, int fftLen)
+        {
             FFT.Fourier(real, imag, WindowType.Hamming);
 
             float[] powerSpectrum = new float[fftLen];
@@ -89,18 +104,19 @@ namespace Dpx
 
             powerSpectrum = powerSpectrum.Take(fftLen / 2).ToArray();//取半频数据,FFT后的频谱对称
 
-            double[] freqArr = FFT.FrequencyScale(sampleRate, fftLen).Take(fftLen / 2).ToArray();
-            double freqScale = Math.Abs(freqArr[1] - freqArr[0]) / 1e3;
+            int freqLength = fftLen / 2;
+            //double[] freqArr = FFT.FrequencyScale(sampleRate, fftLen).Take(fftLen / 2).ToArray();
+            double freqScale = sampleRate / fftLen / scale;//频率间隔
             if (spectrum == null)
             {
-                spectrum = new double[200, freqArr.Length];
+                spectrum = new ulong[(int)maxNum, freqLength];
             }
-            for (int x = 0; x < freqArr.Length; x++)
+            for (int x = 0; x < freqLength; x++)
             {
-                int y = (int)Math.Round(powerSpectrum[x]);
+                int y = (int)Math.Round(powerSpectrum[x]) + 30;
                 spectrum[y, x] += 1;
             }
-            var dataSeries = new UniformHeatmapDataSeries<double, double, double>(spectrum, 0, freqScale, 0, 1);
+            var dataSeries = new UniformHeatmapDataSeries<double, double, ulong>(spectrum, 0, freqScale, 0, 1);
             heatmapSeries.DataSeries = dataSeries;
         }
 
@@ -121,17 +137,23 @@ namespace Dpx
                 MessageBox.Error("正在运行Sinx模拟!");
                 return;
             }
+            spectrum = null;
+            scale = 0;
 
-            this.xAxis.TextFormatting = "0.0MHz";
+
             double fs = 96e6;//采样率
             double fc = 20e6;//信号载频
             double t = 1 / fs;//时间间隔
             int A = 1400;//幅度
             int fftLen = 4096;//FFT点数
-            spectrum = null;
-            heatmapPalette.Maximum = 200;
-            heatmapPalette.Minimum = 0;
-            this.yAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, 200);
+            this.sampleRate = (uint)fs;
+            this.scale = GetFreqHzScale(sampleRate);
+
+            this.maxNum = 200;
+            this.heatmapPalette.Maximum = maxNum;
+            this.heatmapPalette.Minimum = 0;
+            this.xAxis.TextFormatting = "0.0MHz";
+            this.yAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, maxNum);
             this.xAxis.VisibleRange = new SciChart.Data.Model.DoubleRange(0, 48);
 
             exit = false;
@@ -150,32 +172,76 @@ namespace Dpx
                         imag[i] = 0.0f;
                     }
 
-                    FFT.Fourier(real, imag, WindowType.Hamming);
-
-                    float[] powerSpectrum = new float[fftLen];
-                    for (int j = 0; j < fftLen; j++)
-                    {
-                        powerSpectrum[j] = (float)(10 * Math.Log10(real[j] * real[j] + imag[j] * imag[j]));//dB
-                    }
-
-                    powerSpectrum = powerSpectrum.Take(fftLen / 2).ToArray();//取半频数据,FFT后的频谱对称
-                    double[] freqArr = FFT.FrequencyScale(fs, fftLen).Take(fftLen / 2).ToArray();
-                    double freqScale = Math.Abs(freqArr[1] - freqArr[0]) / 1e6;
-                    if (spectrum == null)
-                    {
-                        spectrum = new double[200, freqArr.Length];
-                    }
-                    for (int x = 0; x < freqArr.Length; x++)
-                    {
-                        int y = (int)Math.Round(powerSpectrum[x]);
-                        spectrum[y, x] += 1;
-                    }
-                    var dataSeries = new UniformHeatmapDataSeries<double, double, double>(spectrum, 0, freqScale, 0, 1);
-                    heatmapSeries.DataSeries = dataSeries;
+                    Fft(real, imag, real.Length);
                     Thread.Sleep(20);
                 }
 
             });
+        }
+
+
+        /// <summary>
+        /// 频率转换
+        /// </summary>
+        /// <param name="sampleRate">hz</param>
+        /// <returns></returns>
+        public static string GetFreqUnitName(double sampleRate)
+        {
+            string name = "Hz";
+            int len = Math.Floor(sampleRate).ToString().Length;
+            if (len < 13 && len >= 10)
+            {
+                name = "GHz";
+            }
+            else if (len < 10 && len >= 7)
+            {
+                name = "MHz";
+            }
+            else if (len < 7 && len >= 4)
+            {
+                name = "KHz";
+            }
+            else if (len < 16 && len >= 13)
+            {
+                name = "Hz(E-12)";
+            }
+            else
+            {
+                name = "Hz";
+            }
+            return name;
+        }
+
+        /// <summary>
+        /// 通过采样率获取频率转HZ单位的进制
+        /// </summary>
+        /// <param name="sampleRate"></param>
+        /// <returns></returns>
+        public static int GetFreqHzScale(double sampleRate)
+        {
+            double scale = 1;
+            string name = GetFreqUnitName(sampleRate);
+            switch (name)
+            {
+                case "GHz":
+                    scale = Math.Pow(10, 9);
+                    break;
+                case "MHz":
+                    scale = Math.Pow(10, 6);
+                    break;
+                case "KHz":
+                    scale = Math.Pow(10, 3);
+                    break;
+                case "Hz(E-12)":
+                    scale = Math.Pow(10, 12);
+                    break;
+                case "Hz":
+                    scale = 1;
+                    break;
+                default:
+                    break;
+            }
+            return (int)scale;
         }
     }
 }

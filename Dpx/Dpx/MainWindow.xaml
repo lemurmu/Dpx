@@ -80,7 +80,7 @@
                 </Grid.ColumnDefinitions>
                 <s:SciChartSurface x:Name="sciChart" Grid.Column="0" Padding="0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" ChartTitle="Digital Phosphor Spectrum">
                     <s:SciChartSurface.RenderableSeries>
-                        <local:CustomUniformHeatmapRenderableSeries x:Name="heatmapSeries" DrawTextInCell="True" Opacity="0.9" Style="{StaticResource HeatmapStyle}">
+                        <local:CustomUniformHeatmapRenderableSeries x:Name="heatmapSeries" TextFormatting="0" DrawTextInCell="True" Opacity="0.9" Style="{StaticResource HeatmapStyle}">
                             <local:CustomUniformHeatmapRenderableSeries.ColorMap>
                                 <s:HeatmapColorPalette x:Name="heatmapPalette" Maximum="10" Minimum="0">
                                     <!--<GradientStop Offset="0.0" Color="Black" />-->
