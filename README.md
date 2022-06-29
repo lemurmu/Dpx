@@ -5,9 +5,6 @@ Digital phosphor spectrum for signal analysis
 <br />
 
 <p align="center">
-  <a href="https://github.com/shaojintian/Best_README_template/">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
   <h3 align="center">信号分析之数字荧光谱</h3>
   <p align="center">
