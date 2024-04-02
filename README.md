@@ -17,7 +17,7 @@ Digital phosphor spectrum for signal analysis
 
 </p>
 
-![image](https://github.com/lemurmu/Dpx/tree/master/Screenshort/dpx.png)
+![image](https://github.com/lemurmu/DarkAdminPanel/blob/master/ScreenShoot/app.PNG)
 
  本篇README.md面向开发者，该项目只是阐述DPX数字荧光谱的原理，并用软件模拟DPX效果，但是实际应用场景（在短时间内进行几十万次FFT计算，并求频谱中每个点出现的概率）中使用软件是无法实现的，常常在硬件中使用FPGA去实现，FPGA在短时间内可以进行数万次FFT计算。
  
