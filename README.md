@@ -78,7 +78,7 @@ filetree
 
 ### 开发的架构 
 
-请阅读[ARCHITECTURE.md](https://github.com/lemurmu/Dpx/blob/master/README.md) 查阅为该项目的架构。
+请阅读[README.md](https://github.com/lemurmu/Dpx/blob/master/README.md) 查阅为该项目的架构。
 
 ### 部署
 
@@ -119,7 +119,6 @@ windfall。
 - [Choose an Open Source License](https://choosealicense.com)
 - [GitHub Pages](https://pages.github.com)
 - [Animate.css](https://daneden.github.io/animate.css)
-- [xxxxxxxxxxxxxx](https://connoratherton.com/loaders)
 
 
 
